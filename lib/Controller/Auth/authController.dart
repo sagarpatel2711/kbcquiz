@@ -26,7 +26,6 @@ class AuthController extends FireDBController {
       await createNewUser(user!.displayName.toString(), user.email.toString(),
           user.photoURL.toString(), user.uid);
 
-      logger.w("dsad: ${user.phoneNumber}");
       Get.offAllNamed(Routes.homeView);
       return user;
     } catch (e) {
