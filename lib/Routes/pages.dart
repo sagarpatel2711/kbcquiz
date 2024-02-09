@@ -13,7 +13,7 @@ class Pages {
         transitionDuration: const Duration(milliseconds: 200)),
     GetPage(
         name: _Paths.homeView,
-        page: () => const HomeView(),
+        page: () => HomeView(),
         transition: Transition.leftToRight,
         transitionDuration: const Duration(milliseconds: 200))
   ];

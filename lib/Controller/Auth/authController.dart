@@ -4,10 +4,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kbcquiz/Controller/fireDBController.dart';
 import 'package:kbcquiz/Routes/pages.dart';
 
+import '../../LocalDB/localDB.dart';
 import '../../Utilitys/logger.dart';
 
 class AuthController extends FireDBController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
   // final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
   Future<User?> signInWithGoogleMethod() async {
@@ -26,6 +29,9 @@ class AuthController extends FireDBController {
       await createNewUser(user!.displayName.toString(), user.email.toString(),
           user.photoURL.toString(), user.uid);
 
+      await LocalDB.saveName(user.displayName.toString());
+      await LocalDB.saveUrl(user.photoURL.toString());
+
       Get.offAllNamed(Routes.homeView);
       return user;
     } catch (e) {
@@ -34,9 +40,13 @@ class AuthController extends FireDBController {
     }
   }
 
-  Future<bool> googleSignOutMethod() async {
+  Future<bool> googleSignOut() async {
     try {
-      await FirebaseAuth.instance.signOut();
+      await googleSignIn.signOut();
+      await _auth.signOut();
+
+      await LocalDB.saveUserID("Null");
+      Get.offAllNamed(Routes.signInView);
       return true;
     } catch (e) {
       logger.e(e);
