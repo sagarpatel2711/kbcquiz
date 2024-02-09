@@ -62,7 +62,7 @@ class HomeView extends StatelessWidget {
                           itemCount: 4,
                           itemBuilder: (context, index) {
                             return Card(
-                              margin: EdgeInsets.symmetric(horizontal: 8),
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
                               elevation: 5,
                               child: Image.network(
                                 "urlcaraslider".tr,
@@ -79,7 +79,7 @@ class HomeView extends StatelessWidget {
                             style: Get.textTheme.displayLarge,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         ListTile(
