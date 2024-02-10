@@ -21,7 +21,7 @@ class SideDrawer extends StatelessWidget {
         child: ListView(
           children: [
             InkWell(
-              onTap: () {},
+              onTap: () => Get.toNamed(Routes.profileView),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

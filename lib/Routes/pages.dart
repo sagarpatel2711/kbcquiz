@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:kbcquiz/View/Auth/signInView.dart';
 import 'package:kbcquiz/View/homeView.dart';
+import 'package:kbcquiz/View/profileView.dart';
 
 part 'routes.dart';
 
@@ -14,6 +15,11 @@ class Pages {
     GetPage(
         name: _Paths.homeView,
         page: () => HomeView(),
+        transition: Transition.leftToRight,
+        transitionDuration: const Duration(milliseconds: 200)),
+    GetPage(
+        name: _Paths.profileView,
+        page: () => ProfileView(),
         transition: Transition.leftToRight,
         transitionDuration: const Duration(milliseconds: 200))
   ];
