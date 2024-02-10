@@ -14,30 +14,26 @@ class AuthController extends FireDBController {
   // final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
   Future<User?> signInWithGoogleMethod() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
-      final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+    final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
 
-      final userCredential = await _auth.signInWithCredential(credential);
-      final User? user = userCredential.user;
-      assert(!user!.isAnonymous);
-      final User? currentUser = _auth.currentUser;
-      assert(currentUser!.uid == user!.uid);
-      await createNewUser(user!.displayName.toString(), user.email.toString(),
-          user.photoURL.toString(), user.uid);
+    final userCredential = await _auth.signInWithCredential(credential);
+    final User? user = userCredential.user;
+    assert(!user!.isAnonymous);
+    final User? currentUser = _auth.currentUser;
+    assert(currentUser!.uid == user!.uid);
+    await createNewUser(user!.displayName.toString(), user.email.toString(),
+        user.photoURL.toString(), user.uid);
+    await LocalDB.saveUserID(user.uid);
 
-      await LocalDB.saveName(user.displayName.toString());
-      await LocalDB.saveUrl(user.photoURL.toString());
+    await LocalDB.saveName(user.displayName.toString());
+    await LocalDB.saveUrl(user.photoURL.toString());
 
-      Get.offAllNamed(Routes.homeView);
-      return user;
-    } catch (e) {
-      logger.e(e);
-      return null;
-    }
+    Get.offAllNamed(Routes.homeView);
+    return null;
   }
 
   Future<bool> googleSignOut() async {
@@ -45,7 +41,7 @@ class AuthController extends FireDBController {
       await googleSignIn.signOut();
       await _auth.signOut();
 
-      await LocalDB.saveUserID("Null");
+      await LocalDB.saveUserID("null");
       Get.offAllNamed(Routes.signInView);
       return true;
     } catch (e) {

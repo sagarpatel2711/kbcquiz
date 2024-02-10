@@ -14,7 +14,11 @@ class Themes {
           labelLarge: TextStyle(
               color: AppColors.blackColor,
               fontSize: 25,
-              fontWeight: FontWeight.bold)));
+              fontWeight: FontWeight.bold),
+          labelMedium: TextStyle(
+            color: AppColors.blackColor,
+            fontSize: 16,
+          )));
 
   static final darkTheme = ThemeData.dark().copyWith(
       scaffoldBackgroundColor: AppColors.blackColor,
@@ -28,5 +32,9 @@ class Themes {
           labelLarge: TextStyle(
               color: AppColors.whiteColor,
               fontSize: 25,
-              fontWeight: FontWeight.bold)));
+              fontWeight: FontWeight.bold),
+          labelMedium: TextStyle(
+            color: AppColors.whiteColor,
+            fontSize: 16,
+          )));
 }
