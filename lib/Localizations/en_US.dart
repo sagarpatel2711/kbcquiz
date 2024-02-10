@@ -14,5 +14,7 @@ Map<String, String> enUS = {
   "profile": "Profile",
   "rank": "Rank",
   "startquiz": "START QUIZ",
-  "quizapp": "KBC Quiz App"
+  "quizapp": "KBC Quiz App",
+  "donothaveenoughmoney": "You do not have enough money to buy this QUIZ!",
+  "ok": "OK"
 };

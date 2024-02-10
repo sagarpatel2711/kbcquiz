@@ -12,6 +12,7 @@ class FireDBController extends GetxController {
   RxList<Map<String, dynamic>> listQuizzes = <Map<String, dynamic>>[].obs;
   RxInt selectedCat = 0.obs;
   RxBool enoughMoney = false.obs;
+  RxBool unlockQuiz = false.obs;
 
   createNewUser(String userName, String userEmail, String userPhotoUrl,
       String uID) async {
@@ -94,5 +95,19 @@ class FireDBController extends GetxController {
       logger.e("Not Enough Money");
       return false;
     }
+  }
+
+  Future<bool> checkQuizUnlock(
+      {String userID = "", String quizDocID = ""}) async {
+    await _firestore
+        .collection('users')
+        .doc(userID)
+        .collection("unlock_quiz")
+        .doc(quizDocID)
+        .get()
+        .then((value) {
+      unlockQuiz.value = value.data().toString() != "null";
+    });
+    return unlockQuiz.value;
   }
 }
