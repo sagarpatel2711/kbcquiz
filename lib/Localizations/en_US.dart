@@ -27,5 +27,17 @@ Map<String, String> enUS = {
   "wantquitgame": "DO YOU WANT TO QUIT THE GAME",
   "getrsinacc": "You will get Rs. In Your Account.",
   "quit": "Quit",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "retry": "Retry",
+  "Ohsorry": "Oh Sorry!",
+  "ansincorrect": "YOUR ANSWER IS INCORRECT",
+  "gotorewards": "Go To Rewards",
+  "youwon": "You Won",
+  "quitquiz": "DO YOU WANT TO EXIT QUIZ ?",
+  "sharewithfriends": "Share With Friends",
+  "cong": "CONGRATULATIONS!",
+  "correctans": "YOUR ANSWER IS CORRECT",
+  "nextquestion": "Next Question",
+  "okay": "Okay!",
+  "no": "No!"
 };

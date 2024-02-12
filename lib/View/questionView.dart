@@ -6,6 +6,7 @@ import 'package:kbcquiz/Controller/fireDBController.dart';
 import 'package:kbcquiz/Controller/questionController.dart';
 import 'package:kbcquiz/Localizations/imageAssets.dart';
 import 'package:kbcquiz/Modal/questionResponceModal.dart';
+import 'package:kbcquiz/Routes/pages.dart';
 import 'package:kbcquiz/Themes/appColors.dart';
 import 'package:kbcquiz/Themes/customTextStyle.dart';
 import 'package:kbcquiz/Widgets/lifeLineDrawer.dart';
@@ -14,8 +15,6 @@ import '../Utilitys/logger.dart';
 
 class QuestionView extends StatelessWidget {
   QuestionView({super.key});
-  Timer? timer;
-  RxInt second = 30.obs;
   QuestionController questionController = Get.put(QuestionController());
   FireDBController fireDBController = Get.put(FireDBController());
   QuestionResponceModel questionResponceModel = QuestionResponceModel();
@@ -31,7 +30,7 @@ class QuestionView extends StatelessWidget {
         .genQuestions(
             fireDBController.listQuizzes[fireDBController.selectedCat.value]
                 ['Quizid'],
-            5000)
+            questionController.questionMoney.value)
         .then((questionData) {
       questionResponceModel.question = questionData['question'];
       questionResponceModel.correctAnswer = questionData['correctAnswer'];
@@ -48,8 +47,34 @@ class QuestionView extends StatelessWidget {
       questionResponceModel.option3 = options[2];
       questionResponceModel.option4 = options[3];
     });
+
     isLoading.value = false;
   }
+
+  Future<bool?> showWarning(
+          {required BuildContext context,
+          required String title,
+          required String content}) async =>
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text(
+                  title,
+                  style: Get.textTheme.labelLarge,
+                ),
+                content: Text(content, style: Get.textTheme.labelMedium),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () => Get.back(), child: Text("no".tr)),
+                  ElevatedButton(
+                      onPressed: () async {
+                        await fireDBController
+                            .updateMoney(questionController.winerMoney.value);
+                        Get.offAllNamed(Routes.homeView);
+                      },
+                      child: Text("okay".tr)),
+                ],
+              ));
 
   @override
   Widget build(BuildContext context) {
@@ -57,163 +82,217 @@ class QuestionView extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(image: AssetImage(ImageAssets.bgImg))),
-      child: Scaffold(
-        onDrawerChanged: (isOpened) {},
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Obx(
-            () => Text(
-              isLoading.value ? "Rs." : "Rs. ${questionResponceModel.money}",
-              style: CustomTextStyle.text1,
+      child: WillPopScope(
+        onWillPop: () async {
+          final exitQuiz = await showWarning(
+              context: context,
+              title: "DO YOU WANT TO EXIT QUIZ ?",
+              content:
+                  "You Will Get Rs.${questionResponceModel.money == 5000 ? 0 : questionResponceModel.money / 2} In Your Account.");
+          return exitQuiz ?? false;
+        },
+        child: Scaffold(
+          onDrawerChanged: (isOpened) {},
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Obx(
+              () => Text(
+                isLoading.value ? "Rs." : "Rs. ${questionResponceModel.money}",
+                style: CustomTextStyle.text1,
+              ),
             ),
+            centerTitle: true,
           ),
-          centerTitle: true,
-        ),
-        drawer: const LifeLineDrawer(),
-        floatingActionButton: Obx(
-          () => isLoading.value
-              ? SizedBox()
-              : ElevatedButton(
-                  child: Text(
-                    "quitgame".tr,
-                    style: CustomTextStyle.text1,
-                  ),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                              title: Text(
-                                "wantquitgame".tr,
-                                style: Get.textTheme.displayLarge,
-                              ),
-                              content: Text(
-                                "getrsinacc".tr,
-                                style: Get.textTheme.labelMedium,
-                              ),
-                              actions: [
-                                ElevatedButton(
-                                    onPressed: () async {},
+          drawer: LifeLineDrawer(),
+          floatingActionButton: Obx(
+            () => isLoading.value
+                ? SizedBox()
+                : ElevatedButton(
+                    child: Text(
+                      "quitgame".tr,
+                      style: CustomTextStyle.text1,
+                    ),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: Text(
+                                  "wantquitgame".tr,
+                                  style: Get.textTheme.displayLarge,
+                                ),
+                                content: Text(
+                                  "getrsinacc".tr,
+                                  style: Get.textTheme.labelMedium,
+                                ),
+                                actions: [
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        await fireDBController.updateMoney(
+                                            questionResponceModel.money == 5000
+                                                ? 0
+                                                : questionResponceModel.money ~/
+                                                    2);
+                                        Get.offAllNamed(Routes.homeView);
+                                      },
+                                      child: Text(
+                                        "quit".tr,
+                                        style: CustomTextStyle.text4,
+                                      )),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Get.back();
+                                    },
                                     child: Text(
-                                      "quit".tr,
+                                      "cancel".tr,
                                       style: CustomTextStyle.text4,
-                                    )),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Get.back();
-                                  },
-                                  child: Text(
-                                    "cancel".tr,
-                                    style: CustomTextStyle.text4,
-                                  ),
-                                )
-                              ],
-                            ));
-                  },
-                ),
-        ),
-        body: Obx(
-          () => isLoading.value
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          CircularProgressIndicator(
-                            strokeWidth: 12,
-                            backgroundColor: AppColors.yellowAccentColor,
-                            value: 0,
-                          ),
-                          Center(
-                              child: Text(
-                            "${questionController.iSecond.value}\n seconds",
-                            textAlign: TextAlign.center,
-                            style: CustomTextStyle.text3,
-                          ))
-                        ],
+                                    ),
+                                  )
+                                ],
+                              ));
+                    },
+                  ),
+          ),
+          body: Obx(
+            () => isLoading.value
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            CircularProgressIndicator(
+                              strokeWidth: 12,
+                              backgroundColor: AppColors.yellowAccentColor,
+                              value: 0,
+                            ),
+                            Center(
+                                child: Text(
+                              "${questionController.iSecond.value}\n seconds",
+                              textAlign: TextAlign.center,
+                              style: CustomTextStyle.text3,
+                            ))
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                        padding: const EdgeInsets.all(14),
-                        margin: const EdgeInsets.all(17),
-                        decoration: BoxDecoration(
-                            color: Get.theme.scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Text(
-                          questionResponceModel.question,
-                          style: Get.textTheme.labelMedium,
-                          textAlign: TextAlign.center,
-                        )),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    answerWidget(
-                        selctopt: optLockA.value,
-                        onDoublePress: () {
-                          questionController.timer?.cancel();
-                          optLockA.value = true;
-                          if (questionResponceModel.correctAnswer ==
-                              questionResponceModel.option1) {
-                            logger.i("Correct");
-                          } else {
-                            logger.i("InCorrect");
-                          }
-                        },
-                        option: "A. ${questionResponceModel.option1}"),
-                    answerWidget(
-                        selctopt: optLockB.value,
-                        onDoublePress: () {
-                          questionController.timer?.cancel();
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                          padding: const EdgeInsets.all(14),
+                          margin: const EdgeInsets.all(17),
+                          decoration: BoxDecoration(
+                              color: Get.theme.scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Text(
+                            questionResponceModel.question,
+                            style: Get.textTheme.labelMedium,
+                            textAlign: TextAlign.center,
+                          )),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      answerWidget(
+                          selctopt: optLockA.value,
+                          onDoublePress: () {
+                            questionController.timer?.cancel();
+                            optLockA.value = true;
+                            if (questionResponceModel.correctAnswer ==
+                                questionResponceModel.option1) {
+                              questionController.quiestionQuizID.value =
+                                  fireDBController.listQuizzes[fireDBController
+                                      .selectedCat.value]['Quizid'];
+                              questionController.winerMoney.value =
+                                  questionResponceModel.money;
+                              Get.toNamed(Routes.winView);
+                            } else {
+                              questionController.looserMoney.value =
+                                  questionResponceModel.money ~/ 2;
+                              questionController.correctAns.value =
+                                  questionResponceModel.correctAnswer;
+                              Get.toNamed(Routes.looserView);
+                            }
+                          },
+                          option: "A. ${questionResponceModel.option1}"),
+                      answerWidget(
+                          selctopt: optLockB.value,
+                          onDoublePress: () {
+                            questionController.timer?.cancel();
 
-                          optLockB.value = true;
-                          if (questionResponceModel.correctAnswer ==
-                              questionResponceModel.option2) {
-                            logger.i("Correct");
-                          } else {
-                            logger.i("InCorrect");
-                          }
-                        },
-                        option: "B. ${questionResponceModel.option2}"),
-                    answerWidget(
-                        selctopt: optLockC.value,
-                        onDoublePress: () {
-                          questionController.timer?.cancel();
+                            optLockB.value = true;
+                            if (questionResponceModel.correctAnswer ==
+                                questionResponceModel.option2) {
+                              questionController.quiestionQuizID.value =
+                                  fireDBController.listQuizzes[fireDBController
+                                      .selectedCat.value]['Quizid'];
+                              questionController.winerMoney.value =
+                                  questionResponceModel.money;
+                              Get.toNamed(Routes.winView);
+                            } else {
+                              questionController.looserMoney.value =
+                                  questionResponceModel.money ~/ 2;
+                              questionController.correctAns.value =
+                                  questionResponceModel.correctAnswer;
 
-                          optLockC.value = true;
-                          if (questionResponceModel.correctAnswer ==
-                              questionResponceModel.option3) {
-                            logger.i("Correct");
-                          } else {
-                            logger.i("InCorrect");
-                          }
-                        },
-                        option: "C. ${questionResponceModel.option3}"),
-                    answerWidget(
-                        selctopt: optLockD.value,
-                        onDoublePress: () {
-                          questionController.timer?.cancel();
+                              Get.toNamed(Routes.looserView);
+                            }
+                          },
+                          option: "B. ${questionResponceModel.option2}"),
+                      answerWidget(
+                          selctopt: optLockC.value,
+                          onDoublePress: () {
+                            questionController.timer?.cancel();
 
-                          optLockD.value = true;
-                          if (questionResponceModel.correctAnswer ==
-                              questionResponceModel.option4) {
-                            logger.i("Correct");
-                          } else {
-                            logger.i("InCorrect");
-                          }
-                        },
-                        option: "D. ${questionResponceModel.option4}"),
-                  ],
-                ),
+                            optLockC.value = true;
+                            if (questionResponceModel.correctAnswer ==
+                                questionResponceModel.option3) {
+                              questionController.quiestionQuizID.value =
+                                  fireDBController.listQuizzes[fireDBController
+                                      .selectedCat.value]['Quizid'];
+                              questionController.winerMoney.value =
+                                  questionResponceModel.money;
+                              Get.toNamed(Routes.winView);
+                            } else {
+                              questionController.looserMoney.value =
+                                  questionResponceModel.money ~/ 2;
+                              questionController.correctAns.value =
+                                  questionResponceModel.correctAnswer;
+                              Get.toNamed(Routes.looserView);
+                            }
+                          },
+                          option: "C. ${questionResponceModel.option3}"),
+                      answerWidget(
+                          selctopt: optLockD.value,
+                          onDoublePress: () {
+                            questionController.timer?.cancel();
+
+                            optLockD.value = true;
+                            if (questionResponceModel.correctAnswer ==
+                                questionResponceModel.option4) {
+                              questionController.quiestionQuizID.value =
+                                  fireDBController.listQuizzes[fireDBController
+                                      .selectedCat.value]['Quizid'];
+                              questionController.winerMoney.value =
+                                  questionResponceModel.money;
+                              Get.toNamed(Routes.winView);
+                            } else {
+                              questionController.looserMoney.value =
+                                  questionResponceModel.money ~/ 2;
+                              questionController.correctAns.value =
+                                  questionResponceModel.correctAnswer;
+                              Get.toNamed(Routes.looserView);
+                            }
+                          },
+                          option: "D. ${questionResponceModel.option4}"),
+                    ],
+                  ),
+          ),
         ),
       ),
     );

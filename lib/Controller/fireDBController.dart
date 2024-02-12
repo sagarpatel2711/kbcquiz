@@ -10,6 +10,7 @@ import '../LocalDB/localDB.dart';
 
 class FireDBController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   // final userResponceModal = Rxn<UserResponceModal>();
   RxList<Map<String, dynamic>> listQuizzes = <Map<String, dynamic>>[].obs;
   RxInt selectedCat = 0.obs;
@@ -133,5 +134,21 @@ class FireDBController extends GetxController {
     });
 
     return queData;
+  }
+
+  updateMoney(int ammount) async {
+    if (ammount != 2500) {
+      await _firestore
+          .collection("users")
+          .doc(_auth.currentUser!.uid)
+          .get()
+          .then((value) async {
+        await LocalDB.saveMoney(value.data()!['money'] + ammount);
+        await _firestore
+            .collection("users")
+            .doc(_auth.currentUser!.uid)
+            .update({'money': value.data()!['money'] + ammount});
+      });
+    }
   }
 }

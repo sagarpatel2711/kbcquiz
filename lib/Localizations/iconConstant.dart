@@ -13,4 +13,5 @@ class IconCons {
   static const IconData starHalfIcon = Icons.star_half;
   static const IconData desktopMacIcon = Icons.desktop_mac;
   static const IconData circleIcon = Icons.circle;
+  static const IconData errorIcon = Icons.error_outline;
 }

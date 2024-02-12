@@ -2,12 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kbcquiz/Controller/questionController.dart';
 import 'package:kbcquiz/Localizations/iconConstant.dart';
 import 'package:kbcquiz/Themes/appColors.dart';
 import 'package:kbcquiz/Themes/customTextStyle.dart';
 
 class LifeLineDrawer extends StatelessWidget {
-  const LifeLineDrawer({super.key});
+  LifeLineDrawer({super.key});
+  QuestionController questionController = Get.put(QuestionController());
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,8 @@ class LifeLineDrawer extends StatelessWidget {
                   physics: const AlwaysScrollableScrollPhysics(),
                   itemCount: 13,
                   itemBuilder: (context, index) {
-                    if (2500 * (pow(2, index + 1)) == 5000) {
+                    if (2500 * (pow(2, index + 1)) ==
+                        questionController.questionMoney.value) {
                       return ListTile(
                         tileColor: Colors.deepPurpleAccent,
                         leading: Text(
