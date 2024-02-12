@@ -8,4 +8,9 @@ class IconCons {
   static const IconData shareIcon = Icons.share;
   static const IconData personAddIcon = Icons.person_add;
   static const IconData editIcon = Icons.edit;
+  static const IconData peopleIcon = Icons.people;
+  static const IconData changeCircleIcon = Icons.change_circle;
+  static const IconData starHalfIcon = Icons.star_half;
+  static const IconData desktopMacIcon = Icons.desktop_mac;
+  static const IconData circleIcon = Icons.circle;
 }

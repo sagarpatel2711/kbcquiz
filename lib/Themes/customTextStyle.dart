@@ -11,4 +11,6 @@ class CustomTextStyle {
 
   static const TextStyle text4 =
       TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold);
+  static const TextStyle text5 =
+      TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold);
 }

@@ -16,5 +16,16 @@ Map<String, String> enUS = {
   "startquiz": "START QUIZ",
   "quizapp": "KBC Quiz App",
   "donothaveenoughmoney": "You do not have enough money to buy this QUIZ!",
-  "ok": "OK"
+  "ok": "OK",
+  "prizes": "PRIZES",
+  "asktheexpert": "Ask The\n Expert",
+  "fifty50": "Fifty\n 50",
+  "jokerquestion": "Joker\n Question",
+  "audiencepoll": "Audience\n Poll",
+  "lifeline": "LifeLine",
+  "quitgame": "QUIT GAME",
+  "wantquitgame": "DO YOU WANT TO QUIT THE GAME",
+  "getrsinacc": "You will get Rs. In Your Account.",
+  "quit": "Quit",
+  "cancel": "Cancel"
 };

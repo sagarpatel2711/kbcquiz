@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kbcquiz/Controller/Auth/homeController.dart';
 import 'package:kbcquiz/Controller/fireDBController.dart';
+import 'package:kbcquiz/Routes/pages.dart';
 import 'package:kbcquiz/Themes/customTextStyle.dart';
 
 // ignore: must_be_immutable
@@ -42,35 +43,39 @@ class QuizIntroView extends StatelessWidget {
                   style: CustomTextStyle.text1,
                 ),
                 onPressed: () async {
-                  await fireDBController
-                      .buyQuiz(
-                          quizID: "${quizIntro[quizIndex]['Quizid']}",
-                          quizPrice: quizIntro[quizIndex]['unlock_money'],
-                          userID: homeController.userID.value)
-                      .then((buyQuiz) {
-                    if (buyQuiz) {
-                      quizIsUnlock.value = true;
-                    } else {
-                      return showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                title: Text(
-                                  "donothaveenoughmoney".tr,
-                                  style: Get.textTheme.displayLarge,
-                                ),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text(
-                                        "ok",
-                                        style: Get.textTheme.displayLarge,
-                                      ))
-                                ],
-                              ));
-                    }
-                  });
+                  if (quizIsUnlock.value == true) {
+                    Get.toNamed(Routes.questionView);
+                  } else {
+                    await fireDBController
+                        .buyQuiz(
+                            quizID: "${quizIntro[quizIndex]['Quizid']}",
+                            quizPrice: quizIntro[quizIndex]['unlock_money'],
+                            userID: homeController.userID.value)
+                        .then((buyQuiz) {
+                      if (buyQuiz) {
+                        quizIsUnlock.value = true;
+                      } else {
+                        return showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text(
+                                    "donothaveenoughmoney".tr,
+                                    style: Get.textTheme.displayLarge,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "ok",
+                                          style: Get.textTheme.displayLarge,
+                                        ))
+                                  ],
+                                ));
+                      }
+                    });
+                  }
                 }),
       ),
       appBar: AppBar(

@@ -6,6 +6,7 @@ abstract class Routes {
   static const homeView = _Paths.homeView;
   static const profileView = _Paths.profileView;
   static const quizIntroView = _Paths.quizIntroView;
+  static const questionView = _Paths.questionView;
 }
 
 abstract class _Paths {
@@ -14,4 +15,5 @@ abstract class _Paths {
   static const homeView = "/homeView";
   static const profileView = "/profileView";
   static const quizIntroView = "/quizIntroView";
+  static const questionView = "/questionView";
 }

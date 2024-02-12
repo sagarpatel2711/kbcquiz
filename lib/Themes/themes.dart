@@ -6,6 +6,7 @@ class Themes {
       scaffoldBackgroundColor: AppColors.whiteColor,
       appBarTheme: const AppBarTheme(
           color: AppColors.purpleColor, centerTitle: true, elevation: 0),
+      dividerColor: AppColors.blackColor,
       textTheme: const TextTheme(
           displayLarge: TextStyle(
               color: AppColors.blackColor,
@@ -22,6 +23,7 @@ class Themes {
 
   static final darkTheme = ThemeData.dark().copyWith(
       scaffoldBackgroundColor: AppColors.blackColor,
+      dividerColor: AppColors.whiteColor,
       appBarTheme: const AppBarTheme(
           color: AppColors.black54Color, centerTitle: true, elevation: 0),
       textTheme: const TextTheme(
