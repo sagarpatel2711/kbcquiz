@@ -10,6 +10,8 @@ import 'package:kbcquiz/Themes/appColors.dart';
 import 'package:kbcquiz/Themes/customTextStyle.dart';
 import 'package:kbcquiz/Widgets/lifeLineDrawer.dart';
 
+import '../Utilitys/logger.dart';
+
 class QuestionView extends StatelessWidget {
   QuestionView({super.key});
   Timer? timer;
@@ -18,6 +20,10 @@ class QuestionView extends StatelessWidget {
   FireDBController fireDBController = Get.put(FireDBController());
   QuestionResponceModel questionResponceModel = QuestionResponceModel();
   RxBool isLoading = false.obs;
+  RxBool optLockA = false.obs;
+  RxBool optLockB = false.obs;
+  RxBool optLockC = false.obs;
+  RxBool optLockD = false.obs;
 
   queGen() async {
     isLoading.value = true;
@@ -151,10 +157,61 @@ class QuestionView extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    answerWidget(option: "A. ${questionResponceModel.option1}"),
-                    answerWidget(option: "B. ${questionResponceModel.option2}"),
-                    answerWidget(option: "C. ${questionResponceModel.option3}"),
-                    answerWidget(option: "D. ${questionResponceModel.option4}"),
+                    answerWidget(
+                        selctopt: optLockA.value,
+                        onDoublePress: () {
+                          questionController.timer?.cancel();
+                          optLockA.value = true;
+                          if (questionResponceModel.correctAnswer ==
+                              questionResponceModel.option1) {
+                            logger.i("Correct");
+                          } else {
+                            logger.i("InCorrect");
+                          }
+                        },
+                        option: "A. ${questionResponceModel.option1}"),
+                    answerWidget(
+                        selctopt: optLockB.value,
+                        onDoublePress: () {
+                          questionController.timer?.cancel();
+
+                          optLockB.value = true;
+                          if (questionResponceModel.correctAnswer ==
+                              questionResponceModel.option2) {
+                            logger.i("Correct");
+                          } else {
+                            logger.i("InCorrect");
+                          }
+                        },
+                        option: "B. ${questionResponceModel.option2}"),
+                    answerWidget(
+                        selctopt: optLockC.value,
+                        onDoublePress: () {
+                          questionController.timer?.cancel();
+
+                          optLockC.value = true;
+                          if (questionResponceModel.correctAnswer ==
+                              questionResponceModel.option3) {
+                            logger.i("Correct");
+                          } else {
+                            logger.i("InCorrect");
+                          }
+                        },
+                        option: "C. ${questionResponceModel.option3}"),
+                    answerWidget(
+                        selctopt: optLockD.value,
+                        onDoublePress: () {
+                          questionController.timer?.cancel();
+
+                          optLockD.value = true;
+                          if (questionResponceModel.correctAnswer ==
+                              questionResponceModel.option4) {
+                            logger.i("Correct");
+                          } else {
+                            logger.i("InCorrect");
+                          }
+                        },
+                        option: "D. ${questionResponceModel.option4}"),
                   ],
                 ),
         ),
@@ -163,16 +220,20 @@ class QuestionView extends StatelessWidget {
   }
 
   answerWidget(
-      {void Function()? onTap, void Function()? onLongPress, String? option}) {
+      {void Function()? onDoublePress, String? option, bool selctopt = false}) {
     return InkWell(
-      onTap: onTap,
-      onLongPress: onLongPress,
+      onTap: () {
+        logger.i("Double Tap to lock answer");
+      },
+      onDoubleTap: onDoublePress,
       child: Container(
           width: Get.width,
           padding: const EdgeInsets.all(14),
           margin: const EdgeInsets.symmetric(horizontal: 17, vertical: 5),
           decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.4),
+              color: selctopt
+                  ? AppColors.yellowAccentColor
+                  : Colors.white.withOpacity(0.4),
               borderRadius: BorderRadius.circular(34)),
           child: Text(
             option!,
