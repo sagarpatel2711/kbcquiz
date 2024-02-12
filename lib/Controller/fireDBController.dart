@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -109,5 +111,27 @@ class FireDBController extends GetxController {
       unlockQuiz.value = value.data().toString() != "null";
     });
     return unlockQuiz.value;
+  }
+
+  Future<Map<String, dynamic>> genQuestions(
+      String quizID, int quizMoney) async {
+    Map<String, dynamic> queData = <String, dynamic>{};
+    await _firestore
+        .collection("quizzes")
+        .doc(quizID)
+        .collection("questions")
+        .where('money', isEqualTo: quizMoney)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        var randomQue = Random().nextInt(value.docs.length);
+        queData = value.docs.elementAt(randomQue).data();
+        logger.i("queData : $queData");
+      } else {
+        logger.e("No question found");
+      }
+    });
+
+    return queData;
   }
 }
