@@ -7,6 +7,8 @@ class LocalDB {
   static const uidKey = "dfdbfbdsjfd";
   static const nkey = "dfdsfdsfgfsdf";
   static const pkey = "dsfdsfdfsda";
+  static const F50key = "fddsffdfgnggefg";
+  static const Audkey = "fdsdsadgrrwegfgerrg";
   static Future<bool> saveUserID(String uid) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return await preferences.setString(uidKey, uid);
@@ -65,5 +67,25 @@ class LocalDB {
   static Future<String?> getUrl() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return await preferences.getString(pkey);
+  }
+
+  static Future<bool> save50(bool isAvail) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setBool(F50key, isAvail);
+  }
+
+  static Future<bool?> get50() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.getBool(F50key);
+  }
+
+  static Future<bool> saveAud(bool isAvail) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setBool(Audkey, isAvail);
+  }
+
+  static Future<bool?> getAud() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.getBool(Audkey);
   }
 }

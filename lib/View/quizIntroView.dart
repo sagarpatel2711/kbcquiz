@@ -5,6 +5,8 @@ import 'package:kbcquiz/Controller/fireDBController.dart';
 import 'package:kbcquiz/Routes/pages.dart';
 import 'package:kbcquiz/Themes/customTextStyle.dart';
 
+import '../LocalDB/localDB.dart';
+
 // ignore: must_be_immutable
 class QuizIntroView extends StatelessWidget {
   QuizIntroView({super.key});
@@ -44,6 +46,8 @@ class QuizIntroView extends StatelessWidget {
                 ),
                 onPressed: () async {
                   if (quizIsUnlock.value == true) {
+                    await LocalDB.save50(true);
+                    await LocalDB.saveAud(true);
                     Get.toNamed(Routes.questionView);
                   } else {
                     await fireDBController

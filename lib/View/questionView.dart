@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:kbcquiz/Controller/fireDBController.dart';
 import 'package:kbcquiz/Controller/questionController.dart';
 import 'package:kbcquiz/Localizations/imageAssets.dart';
-import 'package:kbcquiz/Modal/questionResponceModal.dart';
 import 'package:kbcquiz/Routes/pages.dart';
 import 'package:kbcquiz/Themes/appColors.dart';
 import 'package:kbcquiz/Themes/customTextStyle.dart';
@@ -17,7 +16,6 @@ class QuestionView extends StatelessWidget {
   QuestionView({super.key});
   QuestionController questionController = Get.put(QuestionController());
   FireDBController fireDBController = Get.put(FireDBController());
-  QuestionResponceModel questionResponceModel = QuestionResponceModel();
   RxBool isLoading = false.obs;
   RxBool optLockA = false.obs;
   RxBool optLockB = false.obs;
@@ -32,9 +30,11 @@ class QuestionView extends StatelessWidget {
                 ['Quizid'],
             questionController.questionMoney.value)
         .then((questionData) {
-      questionResponceModel.question = questionData['question'];
-      questionResponceModel.correctAnswer = questionData['correctAnswer'];
-      questionResponceModel.money = questionData['money'];
+      questionController.questionResponceModel.question =
+          questionData['question'];
+      questionController.questionResponceModel.correctAnswer =
+          questionData['correctAnswer'];
+      questionController.questionResponceModel.money = questionData['money'];
       List options = [
         questionData["opt1"],
         questionData["opt2"],
@@ -42,10 +42,10 @@ class QuestionView extends StatelessWidget {
         questionData["opt4"],
       ];
       options.shuffle();
-      questionResponceModel.option1 = options[0];
-      questionResponceModel.option2 = options[1];
-      questionResponceModel.option3 = options[2];
-      questionResponceModel.option4 = options[3];
+      questionController.questionResponceModel.option1 = options[0];
+      questionController.questionResponceModel.option2 = options[1];
+      questionController.questionResponceModel.option3 = options[2];
+      questionController.questionResponceModel.option4 = options[3];
     });
 
     isLoading.value = false;
@@ -88,7 +88,7 @@ class QuestionView extends StatelessWidget {
               context: context,
               title: "DO YOU WANT TO EXIT QUIZ ?",
               content:
-                  "You Will Get Rs.${questionResponceModel.money == 5000 ? 0 : questionResponceModel.money / 2} In Your Account.");
+                  "You Will Get Rs.${questionController.questionResponceModel.money == 5000 ? 0 : questionController.questionResponceModel.money / 2} In Your Account.");
           return exitQuiz ?? false;
         },
         child: Scaffold(
@@ -97,7 +97,9 @@ class QuestionView extends StatelessWidget {
           appBar: AppBar(
             title: Obx(
               () => Text(
-                isLoading.value ? "Rs." : "Rs. ${questionResponceModel.money}",
+                isLoading.value
+                    ? "Rs."
+                    : "Rs. ${questionController.questionResponceModel.money}",
                 style: CustomTextStyle.text1,
               ),
             ),
@@ -128,9 +130,14 @@ class QuestionView extends StatelessWidget {
                                   ElevatedButton(
                                       onPressed: () async {
                                         await fireDBController.updateMoney(
-                                            questionResponceModel.money == 5000
+                                            questionController
+                                                        .questionResponceModel
+                                                        .money ==
+                                                    5000
                                                 ? 0
-                                                : questionResponceModel.money ~/
+                                                : questionController
+                                                        .questionResponceModel
+                                                        .money ~/
                                                     2);
                                         Get.offAllNamed(Routes.homeView);
                                       },
@@ -191,7 +198,7 @@ class QuestionView extends StatelessWidget {
                               color: Get.theme.scaffoldBackgroundColor,
                               borderRadius: BorderRadius.circular(20)),
                           child: Text(
-                            questionResponceModel.question,
+                            questionController.questionResponceModel.question,
                             style: Get.textTheme.labelMedium,
                             textAlign: TextAlign.center,
                           )),
@@ -203,93 +210,121 @@ class QuestionView extends StatelessWidget {
                           onDoublePress: () {
                             questionController.timer?.cancel();
                             optLockA.value = true;
-                            if (questionResponceModel.correctAnswer ==
-                                questionResponceModel.option1) {
+                            if (questionController
+                                    .questionResponceModel.correctAnswer ==
+                                questionController
+                                    .questionResponceModel.option1) {
                               questionController.quiestionQuizID.value =
                                   fireDBController.listQuizzes[fireDBController
                                       .selectedCat.value]['Quizid'];
                               questionController.winerMoney.value =
-                                  questionResponceModel.money;
+                                  questionController
+                                      .questionResponceModel.money;
                               Get.toNamed(Routes.winView);
                             } else {
                               questionController.looserMoney.value =
-                                  questionResponceModel.money ~/ 2;
+                                  questionController
+                                          .questionResponceModel.money ~/
+                                      2;
                               questionController.correctAns.value =
-                                  questionResponceModel.correctAnswer;
+                                  questionController
+                                      .questionResponceModel.correctAnswer;
                               Get.toNamed(Routes.looserView);
                             }
                           },
-                          option: "A. ${questionResponceModel.option1}"),
+                          option:
+                              "A. ${questionController.questionResponceModel.option1}"),
                       answerWidget(
                           selctopt: optLockB.value,
                           onDoublePress: () {
                             questionController.timer?.cancel();
 
                             optLockB.value = true;
-                            if (questionResponceModel.correctAnswer ==
-                                questionResponceModel.option2) {
+                            if (questionController
+                                    .questionResponceModel.correctAnswer ==
+                                questionController
+                                    .questionResponceModel.option2) {
                               questionController.quiestionQuizID.value =
                                   fireDBController.listQuizzes[fireDBController
                                       .selectedCat.value]['Quizid'];
                               questionController.winerMoney.value =
-                                  questionResponceModel.money;
+                                  questionController
+                                      .questionResponceModel.money;
                               Get.toNamed(Routes.winView);
                             } else {
                               questionController.looserMoney.value =
-                                  questionResponceModel.money ~/ 2;
+                                  questionController
+                                          .questionResponceModel.money ~/
+                                      2;
                               questionController.correctAns.value =
-                                  questionResponceModel.correctAnswer;
+                                  questionController
+                                      .questionResponceModel.correctAnswer;
 
                               Get.toNamed(Routes.looserView);
                             }
                           },
-                          option: "B. ${questionResponceModel.option2}"),
+                          option:
+                              "B. ${questionController.questionResponceModel.option2}"),
                       answerWidget(
                           selctopt: optLockC.value,
                           onDoublePress: () {
                             questionController.timer?.cancel();
 
                             optLockC.value = true;
-                            if (questionResponceModel.correctAnswer ==
-                                questionResponceModel.option3) {
+                            if (questionController
+                                    .questionResponceModel.correctAnswer ==
+                                questionController
+                                    .questionResponceModel.option3) {
                               questionController.quiestionQuizID.value =
                                   fireDBController.listQuizzes[fireDBController
                                       .selectedCat.value]['Quizid'];
                               questionController.winerMoney.value =
-                                  questionResponceModel.money;
+                                  questionController
+                                      .questionResponceModel.money;
                               Get.toNamed(Routes.winView);
                             } else {
                               questionController.looserMoney.value =
-                                  questionResponceModel.money ~/ 2;
+                                  questionController
+                                          .questionResponceModel.money ~/
+                                      2;
                               questionController.correctAns.value =
-                                  questionResponceModel.correctAnswer;
+                                  questionController
+                                      .questionResponceModel.correctAnswer;
                               Get.toNamed(Routes.looserView);
                             }
                           },
-                          option: "C. ${questionResponceModel.option3}"),
+                          option:
+                              "C. ${questionController.questionResponceModel.option3}"),
                       answerWidget(
                           selctopt: optLockD.value,
                           onDoublePress: () {
                             questionController.timer?.cancel();
 
                             optLockD.value = true;
-                            if (questionResponceModel.correctAnswer ==
-                                questionResponceModel.option4) {
+                            if (questionController
+                                    .questionResponceModel.correctAnswer ==
+                                questionController
+                                    .questionResponceModel.option4) {
                               questionController.quiestionQuizID.value =
                                   fireDBController.listQuizzes[fireDBController
                                       .selectedCat.value]['Quizid'];
                               questionController.winerMoney.value =
-                                  questionResponceModel.money;
+                                  questionController
+                                      .questionResponceModel.money;
                               Get.toNamed(Routes.winView);
                             } else {
                               questionController.looserMoney.value =
-                                  questionResponceModel.money ~/ 2;
+                                  questionController
+                                          .questionResponceModel.money ~/
+                                      2;
                               questionController.correctAns.value =
-                                  questionResponceModel.correctAnswer;
+                                  questionController
+                                      .questionResponceModel.correctAnswer;
                               Get.toNamed(Routes.looserView);
                             }
                           },
-                          option: "D. ${questionResponceModel.option4}"),
+                          option:
+                              "D. ${questionController.questionResponceModel.option4}"),
                     ],
                   ),
           ),

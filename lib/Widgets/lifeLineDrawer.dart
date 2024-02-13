@@ -4,12 +4,32 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kbcquiz/Controller/questionController.dart';
 import 'package:kbcquiz/Localizations/iconConstant.dart';
+import 'package:kbcquiz/Routes/pages.dart';
 import 'package:kbcquiz/Themes/appColors.dart';
 import 'package:kbcquiz/Themes/customTextStyle.dart';
+import 'package:kbcquiz/Utilitys/logger.dart';
+
+import '../LocalDB/localDB.dart';
 
 class LifeLineDrawer extends StatelessWidget {
   LifeLineDrawer({super.key});
   QuestionController questionController = Get.put(QuestionController());
+
+  Future<bool> checkf50Avail() async {
+    bool f50Avail = true;
+    await LocalDB.get50().then((value) {
+      f50Avail = value ?? false;
+    });
+    return f50Avail;
+  }
+
+  Future<bool> audAvail() async {
+    bool audAvail = true;
+    await LocalDB.getAud().then((value) {
+      audAvail = value ?? false;
+    });
+    return audAvail;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +45,12 @@ class LifeLineDrawer extends StatelessWidget {
               children: [
                 _lifelineWidget(
                     icon: IconCons.peopleIcon,
-                    onTap: () {},
+                    onTap: () async {
+                      if (await audAvail()) {
+                        await LocalDB.saveAud(false);
+                        Get.toNamed(Routes.audiencePollView);
+                      }
+                    },
                     title: "audiencepoll".tr),
                 _lifelineWidget(
                     icon: IconCons.changeCircleIcon,
@@ -33,7 +58,14 @@ class LifeLineDrawer extends StatelessWidget {
                     title: "jokerquestion".tr),
                 _lifelineWidget(
                     icon: IconCons.starHalfIcon,
-                    onTap: () {},
+                    onTap: () async {
+                      if (await checkf50Avail()) {
+                        await LocalDB.save50(false);
+                        Get.toNamed(Routes.fifty50View);
+                      } else {
+                        logger.e("YOU ALREADY USED FIFTY50 LIFELINE");
+                      }
+                    },
                     title: "fifty50".tr),
                 _lifelineWidget(
                     icon: IconCons.desktopMacIcon,

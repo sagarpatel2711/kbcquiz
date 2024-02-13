@@ -9,6 +9,8 @@ abstract class Routes {
   static const questionView = _Paths.questionView;
   static const winView = _Paths.winView;
   static const looserView = _Paths.looserView;
+  static const audiencePollView = _Paths.audiencePollView;
+  static const fifty50View = _Paths.fifty50View;
 }
 
 abstract class _Paths {
@@ -20,4 +22,6 @@ abstract class _Paths {
   static const questionView = "/questionView";
   static const winView = "/winView";
   static const looserView = "/looserView";
+  static const audiencePollView = "/audiencePollView";
+  static const fifty50View = "/fifty50View";
 }
