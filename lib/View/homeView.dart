@@ -2,6 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kbcquiz/Controller/Auth/homeController.dart';
+import 'package:kbcquiz/Controller/fireDBController.dart';
+import 'package:kbcquiz/Routes/pages.dart';
 import 'package:kbcquiz/Themes/appColors.dart';
 
 import '../Widgets/drawer.dart';
@@ -10,10 +12,12 @@ import '../Widgets/drawer.dart';
 class HomeView extends StatelessWidget {
   HomeView({super.key});
   HomeController homeController = Get.put(HomeController());
+  FireDBController fireDBController = Get.put(FireDBController());
   RxBool isLoad = false.obs;
   loadData() async {
     isLoad.value = true;
     await homeController.getUserData();
+    await fireDBController.getQuizzes();
     isLoad.value = false;
   }
 
@@ -22,8 +26,7 @@ class HomeView extends StatelessWidget {
     loadData();
     return RefreshIndicator(
       onRefresh: () async {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomeView()));
+        Get.offAllNamed(Routes.homeView);
       },
       child: Scaffold(
           appBar: AppBar(
@@ -59,14 +62,21 @@ class HomeView extends StatelessWidget {
                                   childAspectRatio: 1,
                                   crossAxisSpacing: 5,
                                   mainAxisSpacing: 5),
-                          itemCount: 4,
+                          itemCount: fireDBController.listQuizzes.length,
                           itemBuilder: (context, index) {
-                            return Card(
-                              margin: EdgeInsets.symmetric(horizontal: 8),
-                              elevation: 5,
-                              child: Image.network(
-                                "urlcaraslider".tr,
-                                fit: BoxFit.cover,
+                            return InkWell(
+                              onTap: () {
+                                fireDBController.selectedCat.value = index;
+                                Get.toNamed(Routes.quizIntroView);
+                              },
+                              child: Card(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                elevation: 5,
+                                child: Image.network(
+                                  "${fireDBController.listQuizzes[index]['quiz_thumbnail']}",
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             );
                           },
@@ -79,7 +89,7 @@ class HomeView extends StatelessWidget {
                             style: Get.textTheme.displayLarge,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         ListTile(

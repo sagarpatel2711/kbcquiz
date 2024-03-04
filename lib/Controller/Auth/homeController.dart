@@ -8,6 +8,7 @@ class HomeController extends GetxController {
   RxString userID = "".obs;
   RxString userName = "".obs;
   RxString userPhotoUrl = "".obs;
+
   @override
   void onInit() {
     getUserData();

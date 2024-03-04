@@ -6,6 +6,7 @@ class Themes {
       scaffoldBackgroundColor: AppColors.whiteColor,
       appBarTheme: const AppBarTheme(
           color: AppColors.purpleColor, centerTitle: true, elevation: 0),
+      dividerColor: AppColors.blackColor,
       textTheme: const TextTheme(
           displayLarge: TextStyle(
               color: AppColors.blackColor,
@@ -14,10 +15,15 @@ class Themes {
           labelLarge: TextStyle(
               color: AppColors.blackColor,
               fontSize: 25,
-              fontWeight: FontWeight.bold)));
+              fontWeight: FontWeight.bold),
+          labelMedium: TextStyle(
+            color: AppColors.blackColor,
+            fontSize: 16,
+          )));
 
   static final darkTheme = ThemeData.dark().copyWith(
       scaffoldBackgroundColor: AppColors.blackColor,
+      dividerColor: AppColors.whiteColor,
       appBarTheme: const AppBarTheme(
           color: AppColors.black54Color, centerTitle: true, elevation: 0),
       textTheme: const TextTheme(
@@ -28,5 +34,9 @@ class Themes {
           labelLarge: TextStyle(
               color: AppColors.whiteColor,
               fontSize: 25,
-              fontWeight: FontWeight.bold)));
+              fontWeight: FontWeight.bold),
+          labelMedium: TextStyle(
+            color: AppColors.whiteColor,
+            fontSize: 16,
+          )));
 }
